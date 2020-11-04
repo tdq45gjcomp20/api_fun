@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Fun</title>
+    <style type="text/css">
+    html {
+        box-sizing: border-box;
+    }
+
+    *, *:before, *:after {
+        box-sizing: inherit;
+    }
+
+    body {
+        color: #343434;
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    h1 {
+      
+        text-align: center;
+    }
+
+    header {
+        text-align: center;
+    }
+
+    .content-wrap {
+        max-width: 800px;
+        width: 100%;
+        margin: 0 60px;
+        padding: 60px 0;
+    }
+
+    </style>
+    <script type="text/javascript">
+      function getAirQuality(){
+        request = new XMLHttpRequest();
+        console.log("1 - request object created");
+
+        request.open("GET", "http://api.airvisual.com/v2/nearest_city?key=57adf3f0-ecdb-4ec8-9525-0cad691eb717", true);
+        console.log("2 - opened request file");
+
+        request.onreadystatechange = function() {
+          console.log("3 - readystatechange event fired.");
+
+          if (request.readyState == 4 && request.status == 200) {
+            console.log("5 - response received.");
+            result = request.responseText;
+            aq = JSON.parse(result);
+            document.getElementById("data").innerHTML = "<h2>Your location (based on IP address) " + aq["data"]["city"] + " " + aq["data"]["state"] + "</h2>"
+            + "<p>Air Quality Index (US standard): " + aq["data"]["current"]["pollution"]["aqius"] + "</p><br/>"
+            + "<p>Air Quality Index (China standard): " + aq["data"]["current"]["pollution"]["aqicn"] + "</p><br/>";
+          } else if (request.readyState == 4 && request.status != 200) {
+            document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+          } else if (request.readyState == 3) {
+            document.getElementById("data").innerHTML = "Too soon!  Try again";
+          }
+        }
+
+        request.send();
+			  console.log("4 - Request sent");
+      }
+    </script>
+  </head>
+  <body onload="getAirQuality()">
+    <main>
+      <!-- ***********************  HEADER  ******************************** -->
+      <header>
+      </header>
+      <!-- ********************  CONTENT ON HOME PAGE  ********************* -->
+      <section class="main">
+        <h1>Air Quality</h1>
+        <div id="data" class="content-wrap">Loading...</div>
+      </section>
+      <!-- ********************  FOOTER  *********************************** -->
+
+      <footer>
+
+      </footer>
+    </main>
+  </body>
+</html>
